@@ -10,7 +10,7 @@ from aiogram.types import Message
 from aiogram.utils.markdown import hbold
 from keyboard.keyboards import main_keyboard, main_keyboard_list
 from texts import text_dict
-from config import TOKEN
+from config import TOKEN, GROUP
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from texts import anon_risk, not_anon_risk
@@ -32,6 +32,12 @@ async def command_start_handler(message: Message) -> None:
 async def anon_handler(message: Message) -> None:
     await message.answer('Вы хотели бы', reply_markup=main_keyboard)
 
+
+@dp.message(F.text=='Поделиться контактом')
+async def not_anon_handler(message: Message):
+    await message.answer('Вы хотели бы')
+
+
 @dp.message(F.text in main_keyboard_list)   
 async def risk_handler(message: Message, state: FSMContext):
     await message.answer('Опишите свой запрос')
@@ -42,6 +48,7 @@ async def risk_handler(message: Message, state: FSMContext):
 async def input_handler(message: Message, state: FSMContext):
     first_msg = await state.get_data()['first_message']
     is_anon = True
+    await message.forward(GROUP)
     await message.answer(text_dict[first_msg][is_anon])
     
     
