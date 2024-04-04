@@ -9,3 +9,10 @@ class MyFilter(Filter):
 
     async def __call__(self, message: Message) -> bool:
         return message.text in self.keyboard_list
+
+class FeedBackFilter(Filter):
+    def __init__(self, keyboard_list: List) -> None:
+        pass
+    
+    async def __call__(self, message: Message) -> bool:
+        return '#' in message.reply_to_message.text

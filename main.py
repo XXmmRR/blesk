@@ -12,7 +12,7 @@ from texts import text_dict
 from config import TOKEN, GROUP, ADMIN
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-from filters import MyFilter
+from filters import MyFilter, FeedBackFilter
 from database import User
 from middlewares import CaptionAlbumMiddleware
 
@@ -142,7 +142,12 @@ async def input_handler(message: Message, state: FSMContext):
     await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
     await state.clear()
-    
+
+@dp.message(FeedBackFilter())
+async def test_filter(message: Message):
+    id = message.reply_to_message.text.split('#')[-1]
+    await bot.send_message(chat_id=id, text=message.text)
+
 
 async def main() -> None:
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
