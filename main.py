@@ -8,12 +8,13 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
-from keyboard.keyboards import main_keyboard, main_keyboard_list
+from keyboard.keyboards import main_keyboard, main_keyboard_list, start_keyboard
 from texts import text_dict
 from config import TOKEN, GROUP
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from texts import anon_risk, not_anon_risk
+from filters import MyFilter
 
 dp = Dispatcher()
 
@@ -26,7 +27,7 @@ async def command_start_handler(message: Message) -> None:
     This handler receives messages with `/start` command
     """
     await message.answer('Добрый день! Вас приветствует блеск-бот. Здесь вы можете поделиться информацией, которую считаете важной. Мы благодарим вас за участие в жизни "блеска')
-    await message.answer('Вы можете оставить свои контактные данные или остаться анонимным')
+    await message.answer('Вы можете оставить свои контактные данные или остаться анонимным', reply_markup=start_keyboard)
 
 @dp.message(F.text=='Анонимно')
 async def anon_handler(message: Message) -> None:
@@ -38,15 +39,16 @@ async def not_anon_handler(message: Message):
     await message.answer('Вы хотели бы')
 
 
-@dp.message(F.text in main_keyboard_list)   
+@dp.message(MyFilter(keyboard_list=main_keyboard_list))   
 async def risk_handler(message: Message, state: FSMContext):
-    await message.answer('Опишите свой запрос')
+    await message.answer('Опишите свой запрос', reply_markup=types.ReplyKeyboardRemove())
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)
     
 @dp.message(MainState.description)
 async def input_handler(message: Message, state: FSMContext):
-    first_msg = await state.get_data()['first_message']
+    first_msg = await state.get_data()
+    first_msg = first_msg['first_message']
     is_anon = True
     await message.forward(GROUP)
     await message.answer(text_dict[first_msg][is_anon])

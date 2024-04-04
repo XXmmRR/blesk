@@ -8,9 +8,9 @@ anon_solve_problem = 'Спасибо за Ваше участие в жизни 
 anon_idea = 'Спасибо за Вашу идею и стремление сделать "блеск" лучше. Модератор обработает ваше обращение, идея будет доведена до ответственных сотрудников'
 anon_reward = 'Спасибо, что замечаете позитив вокруг. Ваша благодарность будет передана адресату'
 
-text_dict = {'предупредить о риске': {True: anon_risk, False: not_anon_risk}, 
-             'рассказать о проблеме': {True: anon_solve_problem, False: not_anon_solve_problem},
-             'предложить идею': {True: anon_idea, False: not_anon_idea},
-             'попросить о помощи': {False: not_anon_help},
-             'поблагодарить кого-то': {True: anon_reward, False: not_anon_reward}
+text_dict = {'Предупредить о риске': {True: anon_risk, False: not_anon_risk}, 
+             'Рассказать о проблеме': {True: anon_solve_problem, False: not_anon_solve_problem},
+             'Предложить идею': {True: anon_idea, False: not_anon_idea},
+             'Попросить о помощи': {False: not_anon_help},
+             'Поблагодарить кого-то': {True: anon_reward, False: not_anon_reward}
              }
