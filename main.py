@@ -43,7 +43,6 @@ async def broadcast(message: Message, state: FSMContext):
 @dp.message(Broadcast.message)
 async def mail_handler(message: types.Message, state: FSMContext, album = None):
     users = await User.objects.all()
-    print(album)
     if album:
         success = 0
         fails = 0
@@ -68,7 +67,6 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
                 await bot.send_media_group(user.tg_id,
                                             media_group)
             except Exception as e:
-                print(e)
                 fails += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
     else:
@@ -86,7 +84,6 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
                 success += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
             except Exception as e:
-                print(e)
                 fails += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
     await state.clear()
