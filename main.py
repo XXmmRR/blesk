@@ -48,14 +48,17 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
         success = 0
         fails = 0
         notification = await message.answer(f'Успешных пересылок {success} неудачных {fails}')
-        photos = [x[0].file_id for x in album]
-        try:
-            text = [x[1] for x in album if x[1] != None][0]
-            media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
-            media_group.append(InputMediaPhoto(media=photos[0], caption=text, parse_mode='HTML'))
-        except:
-            media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
-            media_group.append(InputMediaPhoto(media=photos[0], parse_mode='HTML'))
+        text = [x[1] for x in album if x[1] != None][0]
+        media_group = []
+        for i in album[1:]:
+            if isinstance(i[0], PhotoSize):
+                media_group.append(InputMediaPhoto(media=i[0].file_id))
+            else:
+                media_group.append(InputMediaVideo(media=i[0].file_id))
+        if isinstance(album[0][0], PhotoSize):
+            media_group.append(InputMediaPhoto(media=album[0][0].file_id, caption=text, parse_mode='HTML'))
+        else:
+            media_group.append(InputMediaVideo(media=album[0][0].file_id, caption=text, parse_mode='HTML'))
 
         for user in users:
             try:
