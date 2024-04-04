@@ -17,6 +17,7 @@ from texts import anon_risk, not_anon_risk
 from filters import MyFilter
 
 dp = Dispatcher()
+bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
 
 class MainState(StatesGroup):
     description = State()
@@ -34,9 +35,9 @@ async def anon_handler(message: Message) -> None:
     await message.answer('Вы хотели бы', reply_markup=main_keyboard)
 
 
-@dp.message(F.text=='Поделиться контактом')
+@dp.message(F.contact)
 async def not_anon_handler(message: Message):
-    await message.answer('Вы хотели бы')
+    await message.answer('Вы хотели бы', reply_markup=main_keyboard)
 
 
 @dp.message(MyFilter(keyboard_list=main_keyboard_list))   
@@ -50,14 +51,15 @@ async def input_handler(message: Message, state: FSMContext):
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
     is_anon = True
-    await message.forward(GROUP)
+    number = '1234434'
+    request_text = f'Запрос от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+    await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon])
     
     
 
 async def main() -> None:
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
     # And the run events dispatching
     await dp.start_polling(bot)
 
