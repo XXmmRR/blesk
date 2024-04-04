@@ -11,7 +11,7 @@ class MyFilter(Filter):
         return message.text in self.keyboard_list
 
 class FeedBackFilter(Filter):
-    def __init__(self, keyboard_list: List) -> None:
+    def __init__(self) -> None:
         pass
     
     async def __call__(self, message: Message) -> bool:
