@@ -6,7 +6,7 @@ from os import getenv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
-from aiogram.types import Message, InputMediaPhoto
+from aiogram.types import Message, InputMediaPhoto, InputMediaVideo, PhotoSize
 from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard
 from texts import text_dict
 from config import TOKEN, GROUP, ADMIN
@@ -43,6 +43,7 @@ async def broadcast(message: Message, state: FSMContext):
 @dp.message(Broadcast.message)
 async def mail_handler(message: types.Message, state: FSMContext, album = None):
     users = await User.objects.all()
+    print(album)
     if album:
         success = 0
         fails = 0
@@ -139,15 +140,20 @@ async def input_handler(message: Message, state: FSMContext, album = None):
     else:
         request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     if album:
-        photos = [x[0].file_id for x in album]
-        try:
-            text = [x[1] for x in album if x[1] != None][0]
-            media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
-            request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nЗапрос: "{text}"\n\nid#{message.from_user.id}'
-            media_group.append(InputMediaPhoto(media=photos[0], caption=request_text, parse_mode='HTML'))
-            await bot.send_media_group(GROUP, media_group)
-        except:
-            await message.answer('Вы должны были ввести caption для картинки', reply_markup=generate_keyboard(is_anon=is_anon))
+        text = [x[1] for x in album if x[1] != None][0]
+        media_group = []
+        for i in album[1:]:
+            if isinstance(i[0], PhotoSize):
+                media_group.append(InputMediaPhoto(media=i[0].file_id))
+            else:
+                media_group.append(InputMediaVideo(media=i[0].file_id))
+        if isinstance(album[0][0], PhotoSize):
+            media_group.append(InputMediaPhoto(media=album[0][0].file_id, caption=text, parse_mode='HTML'))
+        else:
+            media_group.append(InputMediaVideo(media=album[0][0].file_id, caption=text, parse_mode='HTML'))
+
+        request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nЗапрос: "{text}"\n\nid#{message.from_user.id}'
+        await bot.send_media_group(GROUP, media_group)
     else:
         await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
