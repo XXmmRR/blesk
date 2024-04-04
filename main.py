@@ -26,10 +26,11 @@ class Broadcast(StatesGroup):
     message = State()
     
 
-@dp.message.middleware(CaptionAlbumMiddleware())
+dp.message.middleware(CaptionAlbumMiddleware())
 
 @dp.message(F.text == '/admin')
-async def admin_panel(message: Message):
+async def admin_panel(message: Message, state: FSMContext):
+    await state.clear()
     if message.from_user.id == ADMIN:
          await message.answer('Админ панель', reply_markup=admin_keyboard)
 
@@ -84,11 +85,11 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
 
 
 @dp.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
+async def command_start_handler(message: Message, state: FSMContext) -> None:
     """
     This handler receives messages with `/start` command
     """
-    
+    await state.clear()
     user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.username)
     user = user[0]
     if user:
