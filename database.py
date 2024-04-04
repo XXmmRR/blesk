@@ -10,12 +10,11 @@ DATABASE_URL = "sqlite:///db.sqlite"
 database = databases.Database(DATABASE_URL)
 metadata = sqlalchemy.MetaData()
 
-class BaseMeta(ormar.ModelMeta):
-    metadata = metadata
-    database = database
 
 class User(ormar.Model):
-    class Meta(BaseMeta):
+    class Meta:
+        metadata=metadata
+        database=database
         tablename = "Users"
 
     id: int = ormar.Integer()
@@ -24,4 +23,4 @@ class User(ormar.Model):
     number: str = ormar.String(null=True)
     name: str = ormar.String(max_length=100)
     
-    
+metadata.create_all()
