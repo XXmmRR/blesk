@@ -143,11 +143,15 @@ async def input_handler(message: Message, state: FSMContext, album = None):
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     if album:
         photos = [x[0].file_id for x in album]
-        text = [x[1] for x in album if x[1] != None][0]
-        media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
-        request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{text}"\n\nid#{message.from_user.id}'
-        media_group.append(InputMediaPhoto(media=photos[0], caption=request_text, parse_mode='HTML'))
-        await bot.send_media_group(GROUP, media_group)
+        try:
+            text = [x[1] for x in album if x[1] != None][0]
+            media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
+            request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{text}"\n\nid#{message.from_user.id}'
+            media_group.append(InputMediaPhoto(media=photos[0], caption=request_text, parse_mode='HTML'))
+            await bot.send_media_group(GROUP, media_group)
+        except:
+            await message.answer('Вы должны вводить текст')
+            await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
     else:
         await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
