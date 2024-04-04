@@ -94,7 +94,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
     This handler receives messages with `/start` command
     """
     await state.clear()
-    user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.username)
+    user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.first_name)
     user = user[0]
     if user:
         if user.is_anon:
@@ -138,15 +138,15 @@ async def input_handler(message: Message, state: FSMContext, album = None):
     number = user.number
     is_anon = user.is_anon
     if number:
-        request_text = f'Запрос от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+        request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     else:
-        request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+        request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     if album:
         photos = [x[0].file_id for x in album]
         try:
             text = [x[1] for x in album if x[1] != None][0]
             media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
-            request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{text}"\n\nid#{message.from_user.id}'
+            request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nЗапрос: "{text}"\n\nid#{message.from_user.id}'
             media_group.append(InputMediaPhoto(media=photos[0], caption=request_text, parse_mode='HTML'))
             await bot.send_media_group(GROUP, media_group)
         except:
