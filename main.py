@@ -41,11 +41,17 @@ async def command_start_handler(message: Message) -> None:
 @dp.message(F.text=='Анонимно')
 async def anon_handler(message: Message) -> None:
     await message.answer('Вы хотели бы', reply_markup=main_keyboard)
-
+    user = await User.objects.get(message.from_user.id)
+    user.is_anon = True
+    await user.update()
 
 @dp.message(F.contact)
 async def not_anon_handler(message: Message):
     await message.answer('Вы хотели бы', reply_markup=main_keyboard)
+    user = await User.objects.get(message.from_user.id)
+    user.is_anon = False
+    await user.update()
+
 
 
 @dp.message(MyFilter(keyboard_list=main_keyboard_list))   
