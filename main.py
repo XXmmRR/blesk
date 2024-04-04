@@ -69,6 +69,7 @@ async def risk_handler(message: Message, state: FSMContext):
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)
     
+    
 @dp.message(MainState.description)
 async def input_handler(message: Message, state: FSMContext):
     first_msg = await state.get_data()
