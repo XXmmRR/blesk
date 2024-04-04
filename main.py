@@ -33,26 +33,30 @@ async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
     """
-    user = await User.objects.get_or_create(id=message.from_user.id, username=message.from_user.username, name=message.from_user.username)
+    
+    user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.username)
+    user = user[0]
     if user:
-        if user.is_anon == True:
-            await anon_handler(message)
-        else:
-            await not_anon_handler(message)
-        return 
+        if user.is_anon:
+            if user.is_anon == True:
+                await anon_handler(message)
+            else:
+                await not_anon_handler(message)
+            return 
+
     await message.answer('Добрый день! Вас приветствует блеск-бот. Здесь вы можете поделиться информацией, которую считаете важной. Мы благодарим вас за участие в жизни "блеска')
     await message.answer('Вы можете оставить свои контактные данные или остаться анонимным', reply_markup=start_keyboard)
 
 @dp.message(F.text=='Анонимно')
 async def anon_handler(message: Message) -> None:
-    user = await User.objects.get(message.from_user.id)
+    user = await User.objects.get(tg_id=message.from_user.id)
     user.is_anon = True
     await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 @dp.message(F.contact)
 async def not_anon_handler(message: Message):
-    user = await User.objects.get(message.from_user.id)
+    user = await User.objects.get(tg_id=message.from_user.id)
     user.is_anon = False
     user.number = message.contact.phone_number
     await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
@@ -69,7 +73,7 @@ async def risk_handler(message: Message, state: FSMContext):
 async def input_handler(message: Message, state: FSMContext):
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
-    user = await User.objects.get(message.from_user.id)
+    user = await User.objects.get(tg_id=message.from_user.id)
     
     number = user.number
     is_anon = user.is_anon
@@ -78,8 +82,8 @@ async def input_handler(message: Message, state: FSMContext):
     else:
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
 
-    await bot.send_message(GROUP, text=request_text, reply_markup=generate_keyboard(is_anon=is_anon))
-    await message.answer(text_dict[first_msg][is_anon])
+    await bot.send_message(GROUP, text=request_text)
+    await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
     
     
 
