@@ -7,6 +7,9 @@ start_buttons = [
 start_keyboard = types.ReplyKeyboardMarkup(keyboard=start_buttons, resize_keyboard=True)
 
 
+main_keyboard_list = ['Предупредить о риске', 'Рассказать о проблеме', 'Предложить идею', 'Попросить о помощи', 'Поблагодарить кого-то']
+
+
 
 def generate_keyboard(is_anon: bool):
     main_keyboard_list = ['Предупредить о риске', 'Рассказать о проблеме', 'Предложить идею', 'Попросить о помощи', 'Поблагодарить кого-то']

@@ -8,7 +8,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
-from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard
+from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard
 from texts import text_dict
 from config import TOKEN, GROUP
 from aiogram.fsm.state import StatesGroup, State
@@ -25,7 +25,7 @@ class MainState(StatesGroup):
     
 @dp.message(F.text == '/admin')
 async def admin_panel(message: Message):
-    await message.answer('Админ панель', reply_markup=admin_panel)
+    await message.answer('Админ панель', reply_markup=admin_keyboard)
 
 
 @dp.message(CommandStart())
