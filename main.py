@@ -48,9 +48,13 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
         fails = 0
         notification = await message.answer(f'Успешных пересылок {success} неудачных {fails}')
         photos = [x[0].file_id for x in album]
-        text = [x[1] for x in album if x[1] != None][0]
-        media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
-        media_group.append(InputMediaPhoto(media=photos[0], caption=text, parse_mode='HTML'))
+        try:
+            text = [x[1] for x in album if x[1] != None][0]
+            media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
+            media_group.append(InputMediaPhoto(media=photos[0], caption=text, parse_mode='HTML'))
+        except:
+            media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
+            media_group.append(InputMediaPhoto(media=photos[0], parse_mode='HTML'))
 
         for user in users:
             try:
@@ -127,19 +131,26 @@ async def risk_handler(message: Message, state: FSMContext):
     
     
 @dp.message(MainState.description)
-async def input_handler(message: Message, state: FSMContext):
+async def input_handler(message: Message, state: FSMContext, album = None):
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
     user = await User.objects.get(tg_id=message.from_user.id)
-    
     number = user.number
     is_anon = user.is_anon
     if number:
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     else:
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
-
-    await bot.send_message(GROUP, text=request_text)
+    if album and len(album) > 1:
+        photos = [x[0].file_id for x in album]
+        text = [x[1] for x in album if x[1] != None][0]
+        media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
+        media_group.append(InputMediaPhoto(media=photos[0], caption=text, parse_mode='HTML'))
+        await bot.send_media_group(GROUP, media_group)
+    if message.photo:
+        await bot.send_photo(chat_id=GROUP, caption=request_text, photo=message.photo[-1].file_id)    
+    else:
+        await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
     await state.clear()
 
