@@ -40,10 +40,9 @@ async def broadcast(message: Message, state: FSMContext):
         await message.answer('Введите сообщение для рассылки')
         await state.set_state(Broadcast.message)
 
-
+@dp.message(Broadcast.message)
 async def mail_handler(message: types.Message, state: FSMContext, album = None):
     users = await User.objects.all()
-    print(message)
     if album:
         success = 0
         fails = 0
@@ -58,10 +57,10 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
                 success += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
 
-                await bot.send_media_group(user.chat_id,
+                await bot.send_media_group(user.tg_id,
                                             media_group)
-            except Exception:
-
+            except Exception as e:
+                print(e)
                 fails += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
     else:
@@ -72,13 +71,14 @@ async def mail_handler(message: types.Message, state: FSMContext, album = None):
         for user in users:
             try:
                 await bot.send_message(
-                        chat_id=user.chat_id,
+                        chat_id=user.tg_id,
                         text=message.text,
                         reply_markup=markup
                     )
                 success += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
-            except:
+            except Exception as e:
+                print(e)
                 fails += 1
                 await notification.edit_text(f'Успешных пересылок {success} неудачных {fails}')
     await state.clear()
