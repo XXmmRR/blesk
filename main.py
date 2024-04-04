@@ -141,14 +141,12 @@ async def input_handler(message: Message, state: FSMContext, album = None):
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     else:
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
-    if album and len(album) > 1:
+    if album:
         photos = [x[0].file_id for x in album]
         text = [x[1] for x in album if x[1] != None][0]
         media_group = [InputMediaPhoto(media=x) for x in photos[1:]]
         media_group.append(InputMediaPhoto(media=photos[0], caption=text, parse_mode='HTML'))
         await bot.send_media_group(GROUP, media_group)
-    if message.photo:
-        await bot.send_photo(chat_id=GROUP, caption=request_text, photo=message.photo[-1].file_id)    
     else:
         await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
