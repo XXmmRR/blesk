@@ -147,8 +147,7 @@ async def input_handler(message: Message, state: FSMContext, album = None):
             media_group.append(InputMediaPhoto(media=photos[0], caption=request_text, parse_mode='HTML'))
             await bot.send_media_group(GROUP, media_group)
         except:
-            await message.answer('Вы должны вводить текст')
-            await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
+            await message.answer('Вы должны были ввести caption для картинки', reply_markup=generate_keyboard(is_anon=is_anon))
     else:
         await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
