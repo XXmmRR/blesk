@@ -22,6 +22,11 @@ bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
 
 class MainState(StatesGroup):
     description = State()
+    
+@dp.message(F.text == '/admin')
+async def admin_panel(message: Message):
+    await message.answer('Админ панель', reply_markup=admin_panel)
+
 
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:

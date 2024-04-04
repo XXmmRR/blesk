@@ -16,3 +16,5 @@ def generate_keyboard(is_anon: bool):
     main_keyboard = types.ReplyKeyboardMarkup(keyboard=main_buttons)
     return main_keyboard
 
+admin_buttons = [[types.KeyboardButton(text='Рассылка')]]
+admin_keyboard = types.ReplyKeyboardMarkup(keyboard=admin_buttons, resize_keyboard=True)

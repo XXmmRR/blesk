@@ -5,3 +5,4 @@ load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
 GROUP = os.getenv('GROUP')
+ADMIN = os.getenv('ADMIN')
