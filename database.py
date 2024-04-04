@@ -13,13 +13,10 @@ database = databases.Database(DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 
 
-class MainMeta(ormar.ModelMeta):
-    metadata = metadata
-    database = database
-    
-    
 class User(ormar.Model):
-    class Meta(MainMeta):
+    class Meta:
+        metadata=metadata
+        database=database
         tablename = "Users"
 
     id: int = ormar.Integer()
