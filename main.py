@@ -49,6 +49,7 @@ async def anon_handler(message: Message) -> None:
 async def not_anon_handler(message: Message):
     await message.answer('Вы хотели бы', reply_markup=main_keyboard)
     user = await User.objects.get(message.from_user.id)
+    user.is_anon = False
     user.number = message.contact.phone_number
     await user.update()
 
@@ -65,9 +66,13 @@ async def input_handler(message: Message, state: FSMContext):
     first_msg = first_msg['first_message']
     user = await User.objects.get(message.from_user.id)
     
-    is_anon = True
     number = user.number
-    request_text = f'Запрос от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+    is_anon = user.is_anon
+    if number:
+        request_text = f'Запрос от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+    else:
+        request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+
     await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon])
     
