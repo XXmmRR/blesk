@@ -15,6 +15,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from texts import anon_risk, not_anon_risk
 from filters import MyFilter
+from database import User
 
 dp = Dispatcher()
 bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
@@ -27,6 +28,13 @@ async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
     """
+    user = await User.objects.get_or_create(id=message.from_user.id, username=message.from_user.username, name=message.from_user.username)
+    if user:
+        if user.is_anon == True:
+            await anon_handler(message)
+        else:
+            await not_anon_handler(message)
+        return 
     await message.answer('Добрый день! Вас приветствует блеск-бот. Здесь вы можете поделиться информацией, которую считаете важной. Мы благодарим вас за участие в жизни "блеска')
     await message.answer('Вы можете оставить свои контактные данные или остаться анонимным', reply_markup=start_keyboard)
 
