@@ -101,7 +101,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
             if user.is_anon == True:
                 await anon_handler(message)
             else:
-                await not_anon_handler(message)
+                await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
             return 
 
     await message.answer('Добрый день! Вас приветствует блеск-бот. Здесь вы можете поделиться информацией, которую считаете важной. Мы благодарим вас за участие в жизни "блеска')
