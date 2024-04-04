@@ -8,7 +8,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.utils.markdown import hbold
-from keyboard.keyboards import main_keyboard, main_keyboard_list, start_keyboard
+from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard
 from texts import text_dict
 from config import TOKEN, GROUP
 from aiogram.fsm.state import StatesGroup, State
@@ -40,17 +40,17 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.message(F.text=='Анонимно')
 async def anon_handler(message: Message) -> None:
-    await message.answer('Вы хотели бы', reply_markup=main_keyboard)
     user = await User.objects.get(message.from_user.id)
     user.is_anon = True
+    await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 @dp.message(F.contact)
 async def not_anon_handler(message: Message):
-    await message.answer('Вы хотели бы', reply_markup=main_keyboard)
     user = await User.objects.get(message.from_user.id)
     user.is_anon = False
     user.number = message.contact.phone_number
+    await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 
@@ -73,7 +73,7 @@ async def input_handler(message: Message, state: FSMContext):
     else:
         request_text = f'Запрос от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
 
-    await bot.send_message(GROUP, text=request_text)
+    await bot.send_message(GROUP, text=request_text, reply_markup=generate_keyboard(is_anon=is_anon))
     await message.answer(text_dict[first_msg][is_anon])
     
     
