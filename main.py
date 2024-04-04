@@ -97,7 +97,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
     user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.first_name)
     user = user[0]
     if user:
-        if user.is_anon:
+        if user.is_anon != None:
             if user.is_anon == True:
                 await anon_handler(message)
             else:
