@@ -109,7 +109,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 async def anon_handler(message: Message) -> None:
     user = await User.objects.get(tg_id=message.from_user.id)
     user.is_anon = True
-    await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
+    await message.answer('«Опишите, пожалуйста, подробно суть своего обращения. ✍🏻Если информация касается конкретного филиала, укажите его адрес»', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 @dp.message(F.contact)
@@ -117,7 +117,7 @@ async def not_anon_handler(message: Message):
     user = await User.objects.get(tg_id=message.from_user.id)
     user.is_anon = False
     user.number = message.contact.phone_number
-    await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
+    await message.answer('«Опишите, пожалуйста, подробно суть своего обращения. ✍🏻Если информация касается конкретного филиала, укажите его адрес»', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 
