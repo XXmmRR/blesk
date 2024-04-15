@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message, InputMediaPhoto, InputMediaVideo, PhotoSize
-from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard, request_buttons
+from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard, contact_keyboard
 from texts import text_dict
 from config import TOKEN, GROUP, ADMIN
 from aiogram.fsm.state import StatesGroup, State
@@ -124,14 +124,17 @@ async def not_anon_handler(message: Message):
 
 @dp.message(MyFilter(keyboard_list=main_keyboard_list))   
 async def risk_handler(message: Message, state: FSMContext):
-    
-    await message.answer('Опишите свой запрос', reply_markup=types.ReplyKeyboardRemove())
+
+    await message.answer('Опишите свой запрос', reply_markup=contact_keyboard())
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)
     
     
 @dp.message(MainState.description)
 async def input_handler(message: Message, state: FSMContext, album = None):
+    if not message.text:
+        contact_keyboard()
+        return 
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
     user = await User.objects.get(tg_id=message.from_user.id)
