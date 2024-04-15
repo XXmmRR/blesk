@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message, InputMediaPhoto, InputMediaVideo, PhotoSize
-from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard
+from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard, request_buttons
 from texts import text_dict
 from config import TOKEN, GROUP, ADMIN
 from aiogram.fsm.state import StatesGroup, State
@@ -101,9 +101,10 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
         if user.is_anon != None:
             await message.answer('Вы хотели бы', reply_markup=generate_keyboard(user.is_anon))
             return 
-
-    await message.answer('Привет! 👋 Вас приветствует блеск-бот. 😊 Здесь вы можете поделиться информацией, которую считаете важной. ☝️Мы благодарим вас за участие в жизни "блеска". 🤗')
+        
+        
     await message.answer('Вы можете предоставить свои контактные данные  📱 для получения обратной связи или остаться анонимным 🤫', reply_markup=start_keyboard)
+    await message.answer('Привет! 👋 Вас приветствует блеск-бот. 😊 Здесь вы можете поделиться информацией, которую считаете важной. ☝️Мы благодарим вас за участие в жизни "блеска". 🤗')
 
 @dp.message(F.text=='Анонимно')
 async def anon_handler(message: Message) -> None:
@@ -123,6 +124,7 @@ async def not_anon_handler(message: Message):
 
 @dp.message(MyFilter(keyboard_list=main_keyboard_list))   
 async def risk_handler(message: Message, state: FSMContext):
+    
     await message.answer('Опишите свой запрос', reply_markup=types.ReplyKeyboardRemove())
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)

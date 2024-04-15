@@ -6,6 +6,11 @@ start_buttons = [
 ]
 start_keyboard = types.ReplyKeyboardMarkup(keyboard=start_buttons, resize_keyboard=True)
 
+request_buttons = [ 
+  [types.KeyboardButton(text='Поделиться контактом', request_contact=True)],
+  [types.KeyboardButton(text='Продолжить Анонимно')]
+]
+
 
 main_keyboard_list = ['предупредить о риске❗️', 'Рассказать о проблеме😱', 'Предложить идею💡', 'Попросить о помощи🙏🏻', 'Поблагодарить кого-то❤️']
 
