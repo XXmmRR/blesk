@@ -124,8 +124,13 @@ async def not_anon_handler(message: Message):
 
 @dp.message(MyFilter(keyboard_list=main_keyboard_list))   
 async def risk_handler(message: Message, state: FSMContext):
+    user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.first_name)
+    user = user[0]
+    if user.is_anon:
+        await message.answer('Опишите свой запрос', reply_markup=contact_keyboard)
+    else:
+        await message.answer('Опишите свой запрос')
 
-    await message.answer('Опишите свой запрос', reply_markup=contact_keyboard())
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)
     
