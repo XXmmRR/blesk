@@ -17,7 +17,7 @@ from database import User
 from middlewares import CaptionAlbumMiddleware
 
 dp = Dispatcher()
-bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot('7009502793:AAFAsApQXyXDCNuka11j9c1oc5F0LZXMFrM', parse_mode=ParseMode.HTML)
 
 class MainState(StatesGroup):
     description = State()
