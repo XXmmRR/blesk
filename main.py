@@ -129,7 +129,7 @@ async def risk_handler(message: Message, state: FSMContext):
     if user.is_anon:
         await message.answer('Опишите свой запрос', reply_markup=contact_keyboard)
     else:
-        await message.answer('Опишите свой запрос')
+        await message.answer('Опишите свой запрос', reply_markup=types.ReplyKeyboardRemove())
 
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)
