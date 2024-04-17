@@ -12,8 +12,8 @@ request_buttons = [
 ]
 
 back_buttons = [
-  types.KeyboardButton(text='🔙Назад')
-]
+  [types.KeyboardButton(text='🔙Назад')]
+  ]
 
 back_keyboard = types.ReplyKeyboardMarkup(keyboard=back_buttons, resize_keyboard=True)
 
