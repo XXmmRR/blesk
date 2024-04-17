@@ -169,7 +169,7 @@ async def input_handler(message: Message, state: FSMContext, album = None):
         await bot.send_media_group(GROUP, media_group)
     else:
         await bot.send_message(GROUP, text=request_text)
-    await message.answer(text_dict[first_msg][is_anon], reply_markup=generate_keyboard(is_anon=is_anon))
+    await message.answer('Вы можете предоставить свои контактные данные  📱 для получения обратной связи или остаться анонимным 🤫', reply_markup=start_keyboard)
     await state.clear()
 
 @dp.message(FeedBackFilter())
