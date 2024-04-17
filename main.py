@@ -122,7 +122,7 @@ async def risk_handler(message: Message, state: FSMContext):
     user = await User.objects.get_or_create(tg_id=message.from_user.id, username=message.from_user.username, name=message.from_user.first_name)
     user = user[0]
     if user.is_anon:
-        await message.answer(text_dict[message.text]['Запрос'], reply_markup=contact_keyboard)
+        await message.answer(text_dict[message.text]['Запрос'], reply_markup=back_keyboard)
     else:
         await message.answer(text_dict[message.text]['Запрос'], reply_markup=back_keyboard)
 
@@ -165,7 +165,7 @@ async def input_handler(message: Message, state: FSMContext, album = None):
     else:
         await bot.send_message(GROUP, text=request_text)
     await message.answer(text_dict[first_msg][is_anon])
-    await message.answer('Если хотите обратиться снова, нажмите /start', reply_markup=start_keyboard)
+    await message.answer('Если хотите обратиться снова, нажмите /start', reply_markup=types.ReplyKeyboardRemove())
     await state.clear()
 
 @dp.message(FeedBackFilter())
