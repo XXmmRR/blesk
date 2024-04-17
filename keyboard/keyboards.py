@@ -8,7 +8,14 @@ start_keyboard = types.ReplyKeyboardMarkup(keyboard=start_buttons, resize_keyboa
 
 request_buttons = [ 
   [types.KeyboardButton(text='Поделиться контактом', request_contact=True)],
+  [types.KeyboardButton(text='🔙Назад')]
 ]
+
+back_buttons = [
+  types.KeyboardButton(text='🔙Назад')
+]
+
+back_keyboard = types.ReplyKeyboardMarkup(keyboard=back_buttons, resize_keyboard=True)
 
 contact_keyboard = types.ReplyKeyboardMarkup(keyboard=request_buttons, resize_keyboard=True)
 

@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message, InputMediaPhoto, InputMediaVideo, PhotoSize
-from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard, contact_keyboard
+from keyboard.keyboards import generate_keyboard, main_keyboard_list, start_keyboard, admin_keyboard, contact_keyboard, back_keyboard
 from texts import text_dict
 from config import TOKEN, GROUP, ADMIN
 from aiogram.fsm.state import StatesGroup, State
@@ -129,7 +129,7 @@ async def risk_handler(message: Message, state: FSMContext):
     if user.is_anon:
         await message.answer('Опишите свой запрос', reply_markup=contact_keyboard)
     else:
-        await message.answer('Опишите свой запрос', reply_markup=types.ReplyKeyboardRemove())
+        await message.answer('Опишите свой запрос', reply_markup=back_keyboard)
 
     await state.set_data({'first_message': message.text})
     await state.set_state(MainState.description)
@@ -137,14 +137,17 @@ async def risk_handler(message: Message, state: FSMContext):
     
 @dp.message(MainState.description)
 async def input_handler(message: Message, state: FSMContext, album = None):
+    user = await User.objects.get(tg_id=message.from_user.id)
+    is_anon = user.is_anon
+    if message.text == '🔙Назад':
+        await message.answer('Вы хотели бы', reply_markup=generate_keyboard(is_anon=is_anon))
+        return
     if not message.text:
         contact_keyboard()
         return 
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
-    user = await User.objects.get(tg_id=message.from_user.id)
     number = user.number
-    is_anon = user.is_anon
     if number:
         request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     else:
