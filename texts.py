@@ -12,5 +12,5 @@ text_dict = {'Предупредить о риске❗️': {True: anon_risk, F
              'Рассказать о проблеме😱': {True: anon_solve_problem, False: not_anon_solve_problem},
              'Предложить идею💡': {True: anon_idea, False: not_anon_idea},
              'Попросить о помощи🙏🏻': {False: not_anon_help},
-             'поблагодарить кого-то❤️': {True: anon_reward, False: not_anon_reward}
+             'Поблагодарить кого-то❤️': {True: anon_reward, False: not_anon_reward}
              }
