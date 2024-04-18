@@ -17,7 +17,7 @@ from database import User
 from middlewares import CaptionAlbumMiddleware
 
 dp = Dispatcher()
-bot = Bot('7005177151:AAFFMMxBDRFBkeKAaPy_DD0Uhbw5yAXdwtw', parse_mode=ParseMode.HTML)
+bot = Bot('7009502793:AAFAsApQXyXDCNuka11j9c1oc5F0LZXMFrM', parse_mode=ParseMode.HTML)
 
 class MainState(StatesGroup):
     description = State()
@@ -105,7 +105,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 async def anon_handler(message: Message) -> None:
     user = await User.objects.get(tg_id=message.from_user.id)
     user.is_anon = True
-    await message.answer('Опишите, пожалуйста, подробно суть своего обращения. ✍🏻Если информация касается конкретного филиала, укажите его адрес»', reply_markup=generate_keyboard(user.is_anon))
+    await message.answer('Выберите, пожалуйста, цель своего обращения ниже ⬇️', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 @dp.message(F.contact)
@@ -113,7 +113,7 @@ async def not_anon_handler(message: Message):
     user = await User.objects.get(tg_id=message.from_user.id)
     user.is_anon = False
     user.number = message.contact.phone_number
-    await message.answer('Опишите, пожалуйста, подробно суть своего обращения. ✍🏻Если информация касается конкретного филиала, укажите его адрес»', reply_markup=generate_keyboard(user.is_anon))
+    await message.answer('Выберите, пожалуйста, цель своего обращения ниже ⬇️', reply_markup=generate_keyboard(user.is_anon))
     await user.update()
 
 
