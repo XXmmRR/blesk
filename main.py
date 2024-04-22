@@ -142,11 +142,11 @@ async def input_handler(message: Message, state: FSMContext, album = None):
         return 
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
-    number = user.number
+    number = user.is_anon
     if number:
         request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     else:
-        request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
+        request_text = f'Запрос({first_msg}) \nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     if album:
         text = [x[1] for x in album if x[1] != None][0]
         media_group = []
