@@ -143,7 +143,7 @@ async def input_handler(message: Message, state: FSMContext, album = None):
     first_msg = await state.get_data()
     first_msg = first_msg['first_message']
     number = user.is_anon
-    if number:
+    if not number:
         request_text = f'Запрос({first_msg}) от пользователя: @{message.from_user.username}\nномер: {number},\nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
     else:
         request_text = f'Запрос({first_msg}) \nЗапрос: "{message.text}"\n\nid#{message.from_user.id}'
